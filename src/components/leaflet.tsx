@@ -1,11 +1,19 @@
 'use client'
 import { Icon } from 'leaflet'
 import { MapContainer, Marker, Polyline, Popup, TileLayer } from 'react-leaflet'
+import CarMock from '@/assets/carMock.json'
+import MarkerIcon from 'leaflet/dist/images/marker-icon.png'
 import 'leaflet/dist/leaflet.css'
+import 'leaflet/dist/images/marker-shadow.png'
 
-import MarkerClusterGroup from 'leaflet/dist/images/marker-icon.png'
-const Leaflet = ({ coords }: { coords: any }) => {
+import type { Coords } from '@/types/coords'
 
+interface LeafletProps {
+  coords: Coords
+  carMock: typeof CarMock
+}
+
+const Leaflet = ({ coords, carMock }: LeafletProps) => {
   const purpleOptions = { color: 'lime' }
 
   return (
@@ -29,16 +37,15 @@ const Leaflet = ({ coords }: { coords: any }) => {
               <>
                 {coord.properties.type === 'out' ? (
                   <Marker
-                    key={index}
+                    key={coord.properties.name}
                     position={[
                       coord.geometry.coordinates[1],
                       coord.geometry.coordinates[0],
                     ]}
                     icon={
                       new Icon({
-                        iconUrl: 'https://i.imgur.com/8JWbq3F.png',
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
+                        iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Car_with_Driver-Silhouette.svg/2442px-Car_with_Driver-Silhouette.svg.png',
+                        iconSize: [30, 30],
                         popupAnchor: [1, -34],
                         shadowSize: [41, 41],
                       })
@@ -49,14 +56,14 @@ const Leaflet = ({ coords }: { coords: any }) => {
                   </Marker>
                 ) : (
                   <Marker
-                    key={index}
+                    key={coord.properties.name}
                     position={[
                       coord.geometry.coordinates[1],
                       coord.geometry.coordinates[0],
                     ]}
                     icon={
                       new Icon({
-                        iconUrl: MarkerClusterGroup.src,
+                        iconUrl: MarkerIcon.src,
                         iconSize: [25, 41],
                         iconAnchor: [12, 41],
                         popupAnchor: [1, -34],
@@ -76,7 +83,7 @@ const Leaflet = ({ coords }: { coords: any }) => {
           if (coord.geometry.type === 'LineString') {
             return (
               <Polyline
-                key={index}
+                key={coord.properties.name}
                 pathOptions={purpleOptions}
                 positions={coord.geometry.coordinates.map((coord: any) => [
                   coord[1],
