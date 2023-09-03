@@ -7,6 +7,8 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet/dist/images/marker-shadow.png'
 
 import type { Coords } from '@/types/coords'
+import CarList from './car-list'
+import { useState } from 'react'
 
 interface LeafletProps {
   coords: Coords
@@ -14,6 +16,7 @@ interface LeafletProps {
 }
 
 const Leaflet = ({ coords, carMock }: LeafletProps) => {
+  const [selectedCar, setSelectedCar] = useState<typeof CarMock[0] | null>(null)
   const purpleOptions = { color: 'lime' }
 
   return (
@@ -31,29 +34,55 @@ const Leaflet = ({ coords, carMock }: LeafletProps) => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
         />
-        {coords.features.map((coord: any, index: number) => {
+        {coords.features.map((coord: any) => {
           if (coord.geometry.type === 'Point') {
             return (
               <>
                 {coord.properties.type === 'out' ? (
-                  <Marker
-                    key={coord.properties.name}
-                    position={[
-                      coord.geometry.coordinates[1],
-                      coord.geometry.coordinates[0],
-                    ]}
-                    icon={
-                      new Icon({
-                        iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Car_with_Driver-Silhouette.svg/2442px-Car_with_Driver-Silhouette.svg.png',
-                        iconSize: [30, 30],
-                        popupAnchor: [1, -34],
-                        shadowSize: [41, 41],
-                      })
-                    }>
-                    <Popup>
-                      <p className='text-foreground'>{coord.properties.name}</p>
-                    </Popup>
-                  </Marker>
+
+                  selectedCar ? (
+                    <Marker
+                      key={coord.properties.name}
+                      position={[
+                        coord.geometry.coordinates[1],
+                        coord.geometry.coordinates[0],
+                      ]}
+                      icon={
+                        new Icon({
+                          iconUrl: MarkerIcon.src,
+                          iconSize: [25, 41],
+                          iconAnchor: [12, 41],
+                          popupAnchor: [1, -34],
+                          shadowSize: [41, 41],
+                        })
+                      }>
+                      <Popup>
+                        <div >
+                          <h2 className='text-primary text-xl font-semibold'>
+                            {selectedCar.BRAND} {selectedCar.MODEL}
+                          </h2>
+                          <p className='text-muted-foreground text-sm'>
+                            {selectedCar.YEAR} - {selectedCar.COLOR}
+                          </p>
+                        </div>
+                        <div className='cursor-pointer'>
+                          <p className='text-background'>Placa: {selectedCar.placa}</p>
+                          <p className='text-background'>
+                            Número Económico: {selectedCar['numero economico']}
+                          </p>
+                          <p className='text-background'>VIM: {selectedCar.vim}</p>
+                          <p className='text-background '>Asientos: {selectedCar.asientos}</p>
+                          <p className='text-background'>Seguro: {selectedCar.seguro}</p>
+                          <p className='text-background'>
+                            Número de Seguro: {selectedCar['segure numebr']}
+                          </p>
+                        </div>
+
+                      </Popup>
+                    </Marker>
+                  ) :
+                    null
+
                 ) : (
                   <Marker
                     key={coord.properties.name}
@@ -71,7 +100,7 @@ const Leaflet = ({ coords, carMock }: LeafletProps) => {
                       })
                     }>
                     <Popup>
-                      <p className='text-foreground '>
+                      <p className='text-background '>
                         {coord.properties.name}
                       </p>
                     </Popup>
@@ -94,6 +123,7 @@ const Leaflet = ({ coords, carMock }: LeafletProps) => {
           }
         })}
       </MapContainer>
+      <CarList CarMock={carMock} selectedCar={setSelectedCar} />
     </div>
   )
 }

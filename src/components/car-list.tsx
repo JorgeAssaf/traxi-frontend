@@ -2,27 +2,27 @@
 import CarMock from '@/assets/carMock.json'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
-import ReactPaginate from 'react-paginate'
+import { AlertOctagonIcon } from 'lucide-react'
 import { Button } from './ui/button'
 import { Label } from './ui/label'
 import { Input } from './ui/input'
 
 interface CarListProps {
   CarMock: typeof CarMock
+  selectedCar: React.Dispatch<React.SetStateAction<typeof CarMock[0] | null>>
 }
 
-const CarList = ({ CarMock }: CarListProps) => {
+const CarList = ({ CarMock, selectedCar }: CarListProps) => {
   const [query, setQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
 
-  const [year, setYear] = useState('')
+
   const filteredCars = () => {
 
     if (query.length === 0)
       return CarMock.slice(currentPage, currentPage + 6);
 
     const filtered = CarMock.filter(car => car.MODEL.toLowerCase().includes(query) || car.BRAND.toLowerCase().includes(query))
-    if (year.length > 0) return filtered.filter(car => car.YEAR.toString() === year).slice(currentPage, currentPage + 6);
 
     return filtered.slice(currentPage, currentPage + 6);
   }
@@ -38,7 +38,10 @@ const CarList = ({ CarMock }: CarListProps) => {
       setCurrentPage(currentPage - 6);
   }
 
-
+  const handleSelectedCar = (car: any) => {
+    selectedCar({ ...car })
+    console.log(car)
+  }
   return (
     <div>
       <div className='flex justify-between space-x-8 mt-8'>
@@ -46,17 +49,7 @@ const CarList = ({ CarMock }: CarListProps) => {
           <Label>Buscar</Label>
           <Input placeholder='Modelo, Marca o Placa' onChange={(e) => setQuery(e.target.value)} />
         </div>
-        <div>
-          <label htmlFor=''>Año</label>
-          <select name='' id='' onChange={(e) => setYear(e.target.value)}>
-            <option value=''>Selecciona un año</option>
-            {CarMock.sort((a, b) => a.YEAR - b.YEAR).map((car) => (
-              <option value={car.YEAR.toString()} key={car.placa}>
-                {car.YEAR.toString()}
-              </option>
-            ))}
-          </select>
-        </div>
+
       </div>
       <div className='mt-8'>
         <div className='flex justify-between space-x-8 mt-8'>
@@ -69,37 +62,33 @@ const CarList = ({ CarMock }: CarListProps) => {
         </div>
         <div className='grid grid-cols-1 place-content-center md:grid-cols-2 gap-8 mt-8'>
           {
-            filteredCars().map((car) => (
-              <div
-                className=' w-full border  bg-foretext-foreground shadow-lg  rounded-lg overflow-hidden'
-                key={car['segure numebr']}>
-                <div className='px-4 py-2'>
-                  <h2 className='text-foreground text-xl font-semibold'>
-                    {car.BRAND} {car.MODEL}
-                  </h2>
-                  <p className='text-muted-foreground text-sm'>
-                    {car.YEAR} - {car.COLOR}
-                  </p>
+            filteredCars().length > 0 ?
+              filteredCars().map((car) => (
+                <div
+                  className=' w-full border p-2 bg-foretext-foreground shadow-lg  rounded-lg overflow-hidden'
+                  key={car['segure numebr']}
+                >
+                  <div className='px-4 py-2 cursor-pointer' onClick={() => handleSelectedCar(car)}>
+                    <h2 className='text-foreground text-xl font-semibold'>
+                      {car.BRAND} {car.MODEL}
+                    </h2>
+                    <p className='text-muted-foreground text-sm'>
+                      {car.YEAR} - {car.COLOR}
+                    </p>
+                  </div>
                 </div>
-                <div className='px-4 py-2'>
-                  <p className='text-foreground'>Placa: {car.placa}</p>
-                  <p className='text-foreground'>
-                    Número Económico: {car['numero economico']}
-                  </p>
-                  <p className='text-foreground'>VIM: {car.vim}</p>
-                  <p className='text-foreground '>Asientos: {car.asientos}</p>
-                  <p className='text-foreground'>Seguro: {car.seguro}</p>
-                  <p className='text-foreground'>
-                    Número de Seguro: {car['segure numebr']}
-                  </p>
-                </div>
+              ))
+              :
+              <div className='flex flex-col items-center space-y-4'>
+                <AlertOctagonIcon size={64} />
+                <p className='text-foreground'>No se encontraron resultados</p>
+
               </div>
-            ))
           }
         </div>
       </div>
 
-    </div>
+    </div >
 
   )
 }

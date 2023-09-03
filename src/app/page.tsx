@@ -1,7 +1,6 @@
 import CarMock from '@/assets/carMock.json'
-import CarList from '@/components/car-list'
 import dynamic from 'next/dynamic'
-const Leaflet = dynamic(() => import('../components/leaflet'), {
+const MapView = dynamic(() => import('../components/mapView'), {
   loading: () => <p>loading...</p>,
   ssr: false,
 })
@@ -22,9 +21,9 @@ export default async function Home() {
   return (
     <main className='container'>
       <div className='flex flex-col items-center justify-center w-full h-full'>
-        <Leaflet coords={coords[0].geojson} carMock={CarMock} />
+        <MapView coords={coords[0].geojson} carMock={CarMock} />
       </div>
-      <CarList CarMock={CarMock} />
+
     </main>
   )
 }
