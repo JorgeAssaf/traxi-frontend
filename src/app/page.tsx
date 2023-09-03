@@ -18,12 +18,22 @@ const getCoords = async () => {
 export default async function Home() {
   const coords = await getCoords()
 
+  const carMockWithCoords = CarMock.map((car) => {
+    const coords = {
+      lat: Math.random() * (19.5 - 19.4) + 19.4,
+      lng: Math.random() * (-99.2 - -99.3) + -99.3,
+    }
+    return {
+      ...car,
+      coords,
+    }
+  })
+
   return (
     <main className='container'>
       <div className='flex flex-col items-center justify-center w-full h-full'>
-        <MapView coords={coords[0].geojson} carMock={CarMock} />
+        <MapView coords={coords[0].geojson} carMock={carMockWithCoords} />
       </div>
-
     </main>
   )
 }
