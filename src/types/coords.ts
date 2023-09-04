@@ -11,11 +11,29 @@ export interface Feature {
 
 export interface Geometry {
   type: string
-  coordinates: Array<number[] | number>
+  coordinates: Array<number>
 }
 
 export interface Properties {
   name: null | string
   address: null | string
   type: string
+}
+
+
+export interface CarMockWithCoords {
+  placa: string
+  ['numero economico']: string
+  vim: string
+  asientos: number
+  seguro: string
+  ['segure numebr']: string
+  BRAND: string
+  MODEL: string
+  YEAR: number
+  COLOR: string
+  coords: {
+    lat: number
+    lng: number
+  }
 }
