@@ -1,7 +1,8 @@
-import CarMock from '@/assets/carMock.json'
 import dynamic from 'next/dynamic'
+import CarMock from '@/assets/carMock.json'
+import { Skeleton } from '@/components/ui/skeleton'
 const MapView = dynamic(() => import('../components/mapView'), {
-  loading: () => <p>loading...</p>,
+  loading: () => <Skeleton className='w-full h-[500px] md:h-[700px]' />,
   ssr: false,
 })
 
